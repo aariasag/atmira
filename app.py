@@ -11,7 +11,7 @@ path = os.path.abspath(os.getcwd())
 #Read excel
 @st.cache(suppress_st_warning=True)
 def data_read():
-    df1 = pd.read_csv(path + '\\parte1.csv')
+    df = pd.read_csv(path + '\\parte1.csv')
     df['date']=pd.to_datetime(df['date'], format='%Y-%m-%d').dt.date
     return df
 
