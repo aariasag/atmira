@@ -8,35 +8,15 @@ from streamlit_option_menu import option_menu
 #Set local path
 path = os.path.abspath(os.getcwd())
 
-#Read csvs
+#Read excel
 @st.cache(suppress_st_warning=True)
 def data_read():
-    df_items = pd.read_csv(path + '\items_ordered_2years.csv',parse_dates=['created_at'])
-    df_products = pd.read_csv(path + '\products.csv')
-
-    df_items['product_id'] = df_items['product_id'].astype(int)
-    df_products['product_id'] = df_products['product_id'].astype(int)
-    # Eliminamos los productos repetidos
-    df_products = df_products.drop_duplicates(df_products.columns[~df_products.columns.isin(['name'])], keep='first')
-    # join csvs y eliminamos los items que no tienen producto asociado
-    df = df_items.merge(df_products, how='inner', on='product_id')
-
-    # Eliminamos nulos
-    df.dropna(inplace=True)
-
-    # Eliminamos duplicados
-    df.drop_duplicates(inplace=True)
-
-    df['date'] = df['created_at'].apply(lambda x: x.date())
-    df['hour'] = df['created_at'].apply(lambda x: x.hour)
-    df['week'] = df['created_at'].apply(lambda x: x.isocalendar()[1])
-    df['day_of_week'] = df['created_at'].apply(lambda x: x.isocalendar()[2])
-    df['sales'] = df['price'] * df['qty_ordered']
-    df['benefit'] = (df['price'] - df['base_cost']) * df['qty_ordered']
-
+    df1 = pd.read_csv(path + '\\parte1.csv')
+    df['date']=pd.to_datetime(df['date'], format='%Y-%m-%d').dt.date
     return df
 
 df = data_read()
+
 
 #### MENU DEL DASHBOARD ####
 st.sidebar.markdown("# Atmira Dashboard")
@@ -46,9 +26,6 @@ end_date = st.sidebar.date_input('End date', value=datetime.date(2018,12,30), mi
 
 category_list = list(df['analytic_category'].unique())
 selected_category = st.sidebar.multiselect('Choose a category', category_list,category_list[:])
-
-#product_list = list(df['name'].unique())
-#selected_product = st.sidebar.multiselect('Choose a product', product_list,product_list[:])
 
 #### VENTAS POR CATEGORIA EN UN PERIODO ###
 latest_data = df[(df['date']<=end_date) & (df['date']>=start_date)]
