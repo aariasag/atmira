@@ -11,7 +11,15 @@ path = os.path.abspath(os.getcwd())
 #Read excel
 @st.cache(suppress_st_warning=True)
 def data_read():
-    df = pd.read_csv(path + '/data/parte1.csv')
+    df1 = pd.read_csv(path + '/data/parte1.csv')
+    df2 = pd.read_csv(path + '/data/parte2.csv')
+    df3 = pd.read_csv(path + '/data/parte3.csv')
+    df4 = pd.read_csv(path + '/data/parte4.csv')
+    df5 = pd.read_csv(path + '/data/parte5.csv')
+    df6 = pd.read_csv(path + '/data/parte6.csv')
+    df7 = pd.read_csv(path + '/data/parte7.csv')
+    df = pd.concat([df1,df2])
+
     df['date']=pd.to_datetime(df['date'], format='%Y-%m-%d').dt.date
     return df
 
