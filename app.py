@@ -3,7 +3,7 @@ import streamlit as st
 import os
 import plotly.express as px
 import datetime
-from streamlit_option_menu import option_menu
+from wordcloud import WordCloud
 
 #Set local path
 path = os.path.abspath(os.getcwd())
@@ -131,8 +131,7 @@ st.plotly_chart(fig)
 
 ### TOP 10 MOST SOLD PRODUCTS
 
-start_date = datetime.date(2018, 11, 23)
-end_date = datetime.date(2018, 11, 23)
+max_products = st.sidebar.slider("Productos más vendidos", 0, 100, 10 )
 
 latest_data = df[(df['date'] <= end_date) & (df['date'] >= start_date)]
 selected_data = (
@@ -140,10 +139,16 @@ selected_data = (
 
 )
 
-st.write("""## TOP 10 MOST SOLD PRODUCTS""")
+st.write("""## TOP """ + str(max_products) + """ MOST SOLD PRODUCTS""")
 
-most_sold_products = selected_data.sort_values(by='qty_ordered',ascending=False).head(10).reset_index()
+most_sold_products = selected_data.sort_values(by='qty_ordered',ascending=False).head(max_products).reset_index()
 most_sold_products = most_sold_products[['name','qty_ordered']]
 most_sold_products['qty_ordered'] = most_sold_products['qty_ordered'].astype(int)
 
-st.table(most_sold_products)
+d = dict(most_sold_products.values)
+
+wc = WordCloud(background_color="white",random_state=40)
+wc.generate_from_frequencies(frequencies=d)
+fig = px.imshow(wc)
+fig.update_xaxes(showticklabels=False).update_yaxes(showticklabels=False)
+st.plotly_chart(fig)
