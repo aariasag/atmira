@@ -1,6 +1,7 @@
 altair==4.2.0
 argon2-cffi==21.3.0
 argon2-cffi-bindings==21.2.0
+asgiref==3.5.0
 astor==0.8.1
 attrs==21.4.0
 backcall==0.2.0
@@ -20,11 +21,13 @@ DateTime==4.4
 debugpy==1.5.1
 decorator==5.1.1
 defusedxml==0.7.1
+Django==3.2.12
 entrypoints==0.4
 fonttools==4.31.1
 gitdb==4.0.9
 GitPython==3.1.27
 idna==3.3
+image==1.5.33
 importlib-metadata==4.11.3
 importlib-resources==5.4.0
 ipykernel==6.9.2
@@ -80,6 +83,7 @@ Send2Trash==1.8.0
 six==1.16.0
 smmap==5.0.0
 soupsieve==2.3.1
+sqlparse==0.4.2
 statsmodels==0.13.2
 streamlit==1.7.0
 streamlit-option-menu==0.3.2
