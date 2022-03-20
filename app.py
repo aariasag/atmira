@@ -22,6 +22,10 @@ def data_read():
     df = pd.concat([df1,df2])
 
     df['date']=pd.to_datetime(df['date'], format='%Y-%m-%d').dt.date
+    df['sales'] = df['sales'].round(0)
+    df['price'] = df['price'].round(0)
+    df['base_cost'] = df['base_cost'].round(0)
+    df['benefit'] = df['benefit'].round(0)
     return df
 
 df = data_read()
@@ -31,6 +35,8 @@ df = data_read()
 image = Image.open(path + '/data/atida-mifarma-logo.png')
 st.sidebar.image(image,use_column_width=True)
 
+max_word = st.sidebar.slider("Max words to display", 10, 100, 10 )
+
 start_date = st.sidebar.date_input('Start date', value=datetime.date(2017,1,1), min_value=datetime.date(2017,1,1), max_value=datetime.date(2018,12,30))
 end_date = st.sidebar.date_input('End date', value=datetime.date(2018,12,30), min_value = datetime.date(2017,1,1), max_value=datetime.date(2018,12,30))
 
@@ -38,8 +44,6 @@ category_list = list(df['analytic_category'].unique())
 selected_category = st.sidebar.multiselect('Choose a category', category_list,category_list[:])
 
 ### TOP 10 MOST SOLD PRODUCTS
-
-max_word = st.sidebar.slider("Max words to display", 10, 100, 10 )
 
 latest_data = df[(df['date']<=end_date) & (df['date']>=start_date) & df['analytic_category'].isin(selected_category)]
 first_word = latest_data['name'].str.split(expand=True)[0].to_frame(name='name')
@@ -66,7 +70,7 @@ selected_data = (
 
 st.write("""## Sales evolution""")
 st.write("""We observed 2 peaks corresponding to Black Fridays 24/11/2017 and 23/11/2018""")
-fig = px.line(selected_data, x='date', y='sales')
+fig = px.line(selected_data, x='date', y='sales',template='simple_white',)
 
 fig.update_layout(legend=dict(
     orientation="h",
@@ -101,6 +105,10 @@ grouped_data = (
 
 filtered_data = grouped_data[grouped_data['analytic_category'].isin(selected_category)]
 
+filtered_data['price'] = filtered_data['price'].round(0)
+filtered_data['base_cost'] = filtered_data['base_cost'].round(0)
+filtered_data['benefit'] = filtered_data['benefit'].round(0)
+
 #Eliminamos los productos con precio o coste base cero
 filtered_data = filtered_data[(filtered_data.price>0) & (filtered_data.base_cost >0) & (filtered_data.benefit>0)]
 
@@ -111,8 +119,8 @@ fig = px.scatter(filtered_data,
            y='base_cost',
            size = 'benefit',
            color = 'analytic_category',
-           log_x = True,
-           log_y = True,
+           log_x = False,
+           log_y = False,
            hover_name='name')
 
 fig.update_layout(legend=dict(
@@ -140,6 +148,7 @@ grouped_data = (
 filtered_data = grouped_data[grouped_data['analytic_category'].isin(selected_category)]
 
 fig  = px.bar(filtered_data.iloc[:],
+              template='simple_white',
               x=["sales","benefit"],
               y="analytic_category",
               barmode = 'group',
